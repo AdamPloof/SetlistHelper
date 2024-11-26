@@ -1,5 +1,5 @@
 namespace SetlistHelper.Services;
 
-class SetBuilder {
+public class SetBuilder {
     
 }

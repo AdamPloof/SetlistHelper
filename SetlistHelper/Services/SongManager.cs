@@ -10,35 +10,43 @@ using SetlistHelper.Models;
 
 // Uses CsvHelper
 // https://joshclose.github.io/CsvHelper/getting-started/
-class SongManager {
-    private string _songsPath;
+public class SongManager {
+    private readonly string _songsPath;
     private readonly Dictionary<string, Song> _songs;
 
     public SongManager() {
         _songsPath = Path.Combine(Environment.CurrentDirectory, "../data/songs.csv");
         _songs = [];
-        loadSongs();
+        LoadSongs();
     }
 
-    public Song? getSong(string title) {
+    public Song? GetSong(string title) {
         _songs.TryGetValue(title, out Song? song);
 
         return song;
     }
 
-    public void add(Song song) {
-
+    public Dictionary<string, Song> GetSongs() {
+        return _songs;
     }
 
-    public void update(Song song) {
-        
+    public void Add(Song song) {
+        try {
+            _songs.Add(song.Title, song);
+        } catch (ArgumentException) {
+            // TODO: let the user a song with this title is already in the setlist
+        }
     }
 
-    public void remove(Song song) {
-        
+    public void Update(Song song) {
+        _songs[song.Title] = song;
     }
 
-    private void loadSongs() {
+    public void Remove(Song song) {
+        _songs.Remove(song.Title);
+    }
+
+    private void LoadSongs() {
         using (StreamReader reader = new StreamReader(_songsPath))
         using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
