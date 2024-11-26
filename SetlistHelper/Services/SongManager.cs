@@ -15,7 +15,7 @@ public class SongManager {
     private readonly Dictionary<string, Song> _songs;
 
     public SongManager() {
-        _songsPath = Path.Combine(Environment.CurrentDirectory, "../data/songs.csv");
+        _songsPath = Path.Combine(AppContext.BaseDirectory, "./data/songs.csv");
         _songs = [];
         LoadSongs();
     }

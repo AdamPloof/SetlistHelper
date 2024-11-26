@@ -12,10 +12,15 @@
     <PackageReference Include="xunit" Version="2.9.2" />
   </ItemGroup>
 
+  <Target Name="CopyDateFiles" AfterTargets="Build">
+    <Copy
+      SourceFiles="../data/songs.csv"
+      DestinationFolder="$(OutputPath)data/"
+    />
+  </Target>
+
   <ItemGroup>
-    <None Update="../data/songs.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="../data/songs.csv" />
   </ItemGroup>
 
 </Project>
