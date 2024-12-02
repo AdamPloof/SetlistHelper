@@ -63,14 +63,14 @@ public class ArgParserTests {
     [Fact]
     public void OptionsContainAllMixedOpts() {
         string[] args = new string[8];
-        args[0] = "-help";
+        args[0] = "--help";
         args[1] = "-b";
         args[2] = "foo";
-        args[3] = "-edit";
+        args[3] = "--edit";
         args[4] = "-a";
         args[5] = "-r";
         args[6] = "bar";
-        args[7] = "-update";
+        args[7] = "--update";
 
         string[] expectedOpts = new string[6];
         expectedOpts[0] = "--help";
@@ -90,14 +90,14 @@ public class ArgParserTests {
     [Fact]
     public void OptionsContainCorrectValues() {
         string[] args = new string[8];
-        args[0] = "-help";
+        args[0] = "--help";
         args[1] = "-b";
         args[2] = "foo";
-        args[3] = "-edit";
+        args[3] = "--edit";
         args[4] = "-a";
         args[5] = "-r";
         args[6] = "bar";
-        args[7] = "-update";
+        args[7] = "--update";
 
         Dictionary<string, string?> expectedOpts = new Dictionary<string, string?> {
             {"--help", null},
@@ -128,13 +128,13 @@ public class ArgParserTests {
     [Fact]
     public void InvalidOptionsAreDiscarded() {
         string[] args = new string[8];
-        args[0] = "-help";
+        args[0] = "--help";
         args[1] = "-b";
         args[2] = "foo";
         args[3] = "baz";
         args[4] = "bim";
         args[5] = "bam";
-        args[6] = "-update";
+        args[6] = "--update";
         args[7] = "bar";
 
         Dictionary<string, string?> expectedOpts = new Dictionary<string, string?> {

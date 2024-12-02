@@ -95,7 +95,7 @@ public class ArgParser {
             new Option {LongOpt="--edit", ShortOpt="-e"},
             new Option {LongOpt="--add", ShortOpt="-a"},
             new Option {LongOpt="--remove", ShortOpt="-r"},
-            new Option {LongOpt="-update", ShortOpt="-u"}
+            new Option {LongOpt="--update", ShortOpt="-u"}
         ];
 
         return opts;
@@ -108,8 +108,8 @@ public class ArgParser {
         switch (_state) {
             case States.FindOpt:
                 opt = FindOpt(arg);
-                trigger = opt.LongOpt;
-                actionVal = opt.LongOpt;
+                trigger = opt == NullOpt ? DefaultTrigger : opt.LongOpt;
+                actionVal = opt == NullOpt ? "" : opt.LongOpt;
                 break;
             case States.FindVal:
                 opt = FindOpt(arg);
