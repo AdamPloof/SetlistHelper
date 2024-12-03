@@ -6,6 +6,8 @@ namespace SetlistHelper.Services;
  * ArgParser handles collecting the command line args into a Dictionary of options
  * and their values. It uses the state machine pattern to iterate over the
  * args passed to a program and store them as option types and their values.
+ *
+ * TODO: Throw argument exception if a unknown option is passed
  */
 public class ArgParser {
     public struct Option : IEquatable<Option> {
