@@ -1,4 +1,5 @@
 ﻿using SetlistHelper.Services;
+using SetlistHelper.Models;
 
 namespace SetlistHelper;
 
@@ -124,26 +125,51 @@ internal class App {
                 --build -b [TEMPLATE_NAME] Build a setlist from the template provided. If a
                                            template is not provided available templates will
                                            be listed. 
-                --edit -e song|template    Set the edit mode. Must be combined
+                --edit -e [song|template]  Set the edit mode. Must be combined
                                            with --add, --remove, or --update
                 --add -a TITLE             Add a new song/template
                 --remove -r TITLE          Remove a song/template
                 --update -u TITLE          Update a song/template
+                --list -l [song|template]  List all song or templates, default=song
             """;
 
         Console.Write(help);
     }
 
     private void AddSong(string title) {
-        Console.WriteLine($"Adding song {title}...");
+        Song song = SongMaker.MakeSong(title);
+        _manager.Add(song);
     }
 
     private void RemoveSong(string title) {
-        Console.WriteLine($"Removing song {title}...");
+        _manager.Remove(title);
     }
 
     private void UpdateSong(string title) {
-        Console.WriteLine($"Updating song {title}...");
+        Song? song = _manager.GetSong(title);
+        if (song == null) {
+            Console.WriteLine($"Could not find a song for title: {title}");
+            Console.WriteLine("Would you like to add it as a new song?");
+
+            string answer = Console.ReadLine() ?? "n";
+            answer = answer.ToLower();
+            if (answer == "y" || answer == "yes") {
+                AddSong(title);
+            }
+
+            return;
+        }
+        string oldTitle = song.Title;
+        song.Title = SongMaker.PromptForTitle();
+        song.Length = SongMaker.PromptForLength();
+        song.DynamicLevel = SongMaker.PromptForDynamicLevel();
+
+        if (oldTitle == song.Title) {
+            _manager.Update(song);
+        } else {
+            _manager.Remove(oldTitle);
+            _manager.Add(song);
+        }
     }
 
     private void AddTemplate(string templateName) {

@@ -11,11 +11,11 @@ using SetlistHelper.Models;
 // Uses CsvHelper
 // https://joshclose.github.io/CsvHelper/getting-started/
 public class SongManager {
-    private readonly string _songsPath;
+    static readonly string SongsPath = Path.Combine(AppContext.BaseDirectory, "./data/songs.csv");
+
     private readonly Dictionary<string, Song> _songs;
 
     public SongManager() {
-        _songsPath = Path.Combine(AppContext.BaseDirectory, "./data/songs.csv");
         _songs = [];
         LoadSongs();
     }
@@ -33,21 +33,40 @@ public class SongManager {
     public void Add(Song song) {
         try {
             _songs.Add(song.Title, song);
+            Commit();
         } catch (ArgumentException) {
             // TODO: let the user a song with this title is already in the setlist
+            // TODO: check for this explicitly rather than catching as an exception
         }
     }
 
     public void Update(Song song) {
         _songs[song.Title] = song;
+        Commit();
     }
 
-    public void Remove(Song song) {
-        _songs.Remove(song.Title);
+    public void Remove(string title) {
+        if (_songs.Remove(title)) {
+            Commit();
+            Console.WriteLine($"Removed song: {title}");
+        } else {
+            Console.WriteLine($"Could not remove song. No song exists for title: {title}");
+        }
+    }
+
+    /**
+     * Commit the current song list to CSV
+     */
+    private void Commit() {
+        using (StreamWriter writer = new StreamWriter(SongsPath))
+        using (CsvWriter csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        {
+            csv.WriteRecords(_songs.Values.ToList());
+        }
     }
 
     private void LoadSongs() {
-        using (StreamReader reader = new StreamReader(_songsPath))
+        using (StreamReader reader = new StreamReader(SongsPath))
         using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
             IEnumerable<Song> songList = csv.GetRecords<Song>();
