@@ -139,10 +139,12 @@ internal class App {
     private void AddSong(string title) {
         Song song = SongMaker.MakeSong(title);
         _manager.Add(song);
+        Console.WriteLine($"{song.Title} added.");
     }
 
     private void RemoveSong(string title) {
         _manager.Remove(title);
+        Console.WriteLine($"{title} removed.");
     }
 
     private void UpdateSong(string title) {
@@ -151,16 +153,27 @@ internal class App {
             Console.WriteLine($"Could not find a song for title: {title}");
             Console.WriteLine("Would you like to add it as a new song?");
 
-            string answer = Console.ReadLine() ?? "n";
-            answer = answer.ToLower();
-            if (answer == "y" || answer == "yes") {
+            string addNew = Console.ReadLine() ?? "n";
+            addNew = addNew.ToLower();
+            if (addNew == "y" || addNew == "yes") {
                 AddSong(title);
             }
 
             return;
         }
+
+        Console.WriteLine("-- Updating song --");
+        song.Print();
+        Console.WriteLine();
+
         string oldTitle = song.Title;
-        song.Title = SongMaker.PromptForTitle();
+        Console.WriteLine("Change title?");
+        string changeTitle = Console.ReadLine() ?? "n";
+        changeTitle = changeTitle.ToLower();
+        if (changeTitle == "y" || changeTitle == "yes") {
+            song.Title = SongMaker.PromptForTitle();
+        }
+
         song.Length = SongMaker.PromptForLength();
         song.DynamicLevel = SongMaker.PromptForDynamicLevel();
 
@@ -170,10 +183,13 @@ internal class App {
             _manager.Remove(oldTitle);
             _manager.Add(song);
         }
+
+        Console.WriteLine($"{song.Title} updated.");
     }
 
     private void AddTemplate(string templateName) {
-        Console.WriteLine($"Adding template {templateName}...");
+        SetTemplate template = TemplateMaker.MakeTemplate(templateName);
+        Console.WriteLine($"Added template {template.Name}");
     }
 
     private void RemoveTemplate(string templateName) {
