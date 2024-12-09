@@ -12,14 +12,18 @@ using System.Collections.Generic;
  */
 public class SetTemplate {
     public required string Name { get; set; }
-    private List<int> _dynamicPlot = [];
-
-    public List<int> GetDynamicPlot() {
-        return _dynamicPlot;
+    public List<int> DynamicPlot {
+        get { return _dynamicPlot; }
+        set { _dynamicPlot = value; }
     }
 
-    public void SetDynamicPlot(List<int> plot) {
-        _dynamicPlot = plot;
+    private List<int> _dynamicPlot = new List<int>();
+
+    public SetTemplate() {}
+
+    [System.Diagnostics.CodeAnalysis.SetsRequiredMembers]
+    public SetTemplate(string name) {
+        Name = name;
     }
 
     public void AddStep(int step) {

@@ -130,7 +130,7 @@ internal class App {
                 --add -a TITLE             Add a new song/template
                 --remove -r TITLE          Remove a song/template
                 --update -u TITLE          Update a song/template
-                --list -l [song|template]  List all song or templates, default=song
+                --list -l [song|template]  List all songs or templates, default=song
             """;
 
         Console.Write(help);
@@ -193,7 +193,7 @@ internal class App {
     }
 
     private void RemoveTemplate(string templateName) {
-            Console.WriteLine($"Removing template {templateName}...");
+        Console.WriteLine($"Removing template {templateName}...");
     }
 
     private void UpdateTemplate(string templateName) {

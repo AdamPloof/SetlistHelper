@@ -11,9 +11,9 @@ public static class TemplateMaker {
             name = PromptForName();
         }
 
-        SetTemplate template = new SetTemplate() {Name=name};
+        SetTemplate template = new SetTemplate(name);
         PromptForSteps(ref template);
-        if (template.GetDynamicPlot().Count == 0) {
+        if (template.DynamicPlot.Count == 0) {
             Console.WriteLine("Dynamic plot cannot be empty");
             PromptForSteps(ref template);
         }
@@ -36,7 +36,7 @@ public static class TemplateMaker {
         Console.WriteLine($"Enter song {stepCount} dynamic level (1-10): ");
         while (true) {
             string input = Console.ReadLine() ?? "";
-            if (input == "" && template.GetDynamicPlot().Count > 0) {
+            if (input == "" && template.DynamicPlot.Count > 0) {
                 break;
             }
 

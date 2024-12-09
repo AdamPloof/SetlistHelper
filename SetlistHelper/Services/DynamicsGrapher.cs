@@ -9,7 +9,7 @@ using SetlistHelper.Models;
  */
 public static class DynamicsGrapher {
     public static void DrawGraph(SetTemplate template) {
-        DrawGraph(template.GetDynamicPlot());
+        DrawGraph(template.DynamicPlot);
     }
 
     public static void DrawGraph(List<int> dynamicPlot) {

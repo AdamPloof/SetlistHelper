@@ -20,15 +20,19 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <DataFiles Include="data/**/*.*" />
+  </ItemGroup>
+
   <Target Name="CopyDateFiles" AfterTargets="Build">
     <Copy
-      SourceFiles="data/songs.csv"
+      SourceFiles="@(DataFiles)"
       DestinationFolder="$(OutputPath)data/"
     />
   </Target>
 
   <ItemGroup>
-    <None Include="data/songs.csv" />
+    <None Include="@(DataFiles)" />
   </ItemGroup>
 
   <ItemGroup>
