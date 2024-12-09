@@ -1,6 +1,9 @@
 namespace SetlistHelper.Models;
 
+using System.IO;
 using System.Collections.Generic;
+
+using SetlistHelper.Services;
 
 /**
  * SetTemplate stores the dynamic steps of a set. For instance, a set
@@ -26,11 +29,28 @@ public class SetTemplate {
         Name = name;
     }
 
-    public void AddStep(int step) {
-        _dynamicPlot.Add(step);
+    public void AddStep(int lvl) {
+        _dynamicPlot.Add(lvl);
     }
 
     public void RemoveStep(int stepIdx) {
         _dynamicPlot.RemoveAt(stepIdx);
+    }
+
+    public void SetStep(int stepIdx, int lvl) {
+        if (lvl <= 0 || lvl > 10) {
+            throw new ArgumentException($"Level must be between 1-10. {lvl} provided");
+        }
+
+        if (stepIdx < 0 || stepIdx >= _dynamicPlot.Count) {
+            throw new ArgumentException($"Step index must already be set before updating. {stepIdx} provided");
+        }
+
+        _dynamicPlot[stepIdx] = lvl;
+    }
+
+    public void Print() {
+        Console.WriteLine($"Template: {Name}");
+        DynamicsGrapher.DrawGraph(_dynamicPlot);
     }
 }

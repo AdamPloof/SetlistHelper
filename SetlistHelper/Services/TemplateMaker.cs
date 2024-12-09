@@ -54,4 +54,22 @@ public static class TemplateMaker {
             Console.WriteLine("Next step (press enter to stop adding steps): ");
         }
     }
+
+    public static int PromptForDynamicLevel(int defaultLvl = -1) {
+        Console.WriteLine("Dynamic level (press enter to keep old level): ");
+        string strLvl = Console.ReadLine() ?? "";
+        if (strLvl == "" && defaultLvl > 0 && defaultLvl <= 10) {
+            // User pressed enter, use default level
+            Console.WriteLine($"{defaultLvl}");
+
+            return defaultLvl;
+        }
+
+        if (!int.TryParse(strLvl, out int lvl) || lvl < 1 || lvl > 10) {
+            Console.WriteLine("Dynamic level must be a whole number between 1-10");
+            PromptForDynamicLevel();
+        }
+
+        return lvl;
+    }
 }

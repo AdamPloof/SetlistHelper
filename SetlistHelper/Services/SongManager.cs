@@ -34,6 +34,7 @@ public class SongManager {
         try {
             _songs.Add(song.Title, song);
             Commit();
+            Console.WriteLine($"{song.Title} added.");
         } catch (ArgumentException) {
             // TODO: let the user a song with this title is already in the setlist
             // TODO: check for this explicitly rather than catching as an exception
@@ -43,6 +44,7 @@ public class SongManager {
     public void Update(Song song) {
         _songs[song.Title] = song;
         Commit();
+        Console.WriteLine($"{song.Title} updated.");
     }
 
     public void Remove(string title) {
@@ -51,6 +53,13 @@ public class SongManager {
             Console.WriteLine($"Removed song: {title}");
         } else {
             Console.WriteLine($"Could not remove song. No song exists for title: {title}");
+        }
+    }
+
+    public void List() {
+        Console.WriteLine("Songs\n-------");
+        foreach (Song song in _songs.Values.ToList()) {
+            Console.WriteLine(song.Title);
         }
     }
 

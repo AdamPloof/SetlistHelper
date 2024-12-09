@@ -11,7 +11,7 @@ public class ArgParserTests {
         string[] args = new string[8];
         args[0] = "-h";
         args[1] = "-b";
-        args[2] = "-e";
+        args[2] = "-m";
         args[3] = "foo";
         args[4] = "-a";
         args[5] = "-r";
@@ -21,7 +21,7 @@ public class ArgParserTests {
         string[] expectedOpts = new string[6];
         expectedOpts[0] = "--help";
         expectedOpts[1] = "--build";
-        expectedOpts[2] = "--edit";
+        expectedOpts[2] = "--mode";
         expectedOpts[3] = "--add";
         expectedOpts[4] = "--remove";
         expectedOpts[5] = "--update";
@@ -39,7 +39,7 @@ public class ArgParserTests {
         args[0] = "--help";
         args[1] = "--build";
         args[2] = "foo";
-        args[3] = "--edit";
+        args[3] = "--mode";
         args[4] = "--add";
         args[5] = "--remove";
         args[6] = "bar";
@@ -48,7 +48,7 @@ public class ArgParserTests {
         string[] expectedOpts = new string[6];
         expectedOpts[0] = "--help";
         expectedOpts[1] = "--build";
-        expectedOpts[2] = "--edit";
+        expectedOpts[2] = "--mode";
         expectedOpts[3] = "--add";
         expectedOpts[4] = "--remove";
         expectedOpts[5] = "--update";
@@ -66,7 +66,7 @@ public class ArgParserTests {
         args[0] = "--help";
         args[1] = "-b";
         args[2] = "foo";
-        args[3] = "--edit";
+        args[3] = "--mode";
         args[4] = "-a";
         args[5] = "-r";
         args[6] = "bar";
@@ -75,7 +75,7 @@ public class ArgParserTests {
         string[] expectedOpts = new string[6];
         expectedOpts[0] = "--help";
         expectedOpts[1] = "--build";
-        expectedOpts[2] = "--edit";
+        expectedOpts[2] = "--mode";
         expectedOpts[3] = "--add";
         expectedOpts[4] = "--remove";
         expectedOpts[5] = "--update";
@@ -93,7 +93,7 @@ public class ArgParserTests {
         args[0] = "--help";
         args[1] = "-b";
         args[2] = "foo";
-        args[3] = "--edit";
+        args[3] = "--mode";
         args[4] = "-a";
         args[5] = "-r";
         args[6] = "bar";
@@ -102,7 +102,7 @@ public class ArgParserTests {
         Dictionary<string, string?> expectedOpts = new Dictionary<string, string?> {
             {"--help", null},
             {"--build", "foo"},
-            {"--edit", null},
+            {"--mode", null},
             {"--add", null},
             {"--remove", "bar"},
             {"--update", null},

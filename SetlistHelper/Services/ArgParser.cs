@@ -94,10 +94,12 @@ public class ArgParser {
         List<Option> opts = [
             new Option {LongOpt="--help", ShortOpt="-h"},
             new Option {LongOpt="--build", ShortOpt="-b"},
-            new Option {LongOpt="--edit", ShortOpt="-e"},
+            new Option {LongOpt="--mode", ShortOpt="-m"},
             new Option {LongOpt="--add", ShortOpt="-a"},
             new Option {LongOpt="--remove", ShortOpt="-r"},
-            new Option {LongOpt="--update", ShortOpt="-u"}
+            new Option {LongOpt="--update", ShortOpt="-u"},
+            new Option {LongOpt="--list", ShortOpt="-l"},
+            new Option {LongOpt="--show", ShortOpt="-s"}
         ];
 
         return opts;

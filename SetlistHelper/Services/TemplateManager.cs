@@ -21,6 +21,12 @@ public class TemplateManager {
         LoadTemplates();
     }
 
+    public SetTemplate? GetTemplate(string templateName) {
+        _templates.TryGetValue(templateName, out SetTemplate? template);
+
+        return template;
+    }
+
     public Dictionary<string, SetTemplate> GetTemplates() {
         return _templates;
     }
@@ -29,6 +35,7 @@ public class TemplateManager {
         try {
             _templates.Add(template.Name, template);
             Commit();
+            Console.WriteLine($"Added template {template.Name}");
         } catch (ArgumentException) {
             // TODO: let the user a template with this title is already in the setlist
             // TODO: check for this explicitly rather than catching as an exception
@@ -49,16 +56,34 @@ public class TemplateManager {
         }
     }
 
+    public void List() {
+        Console.WriteLine("Templates\n-------");
+        foreach (SetTemplate template in _templates.Values.ToList()) {
+            Console.WriteLine(template.Name);
+        }
+    }
+
     /**
      * Commit the current template list to CSV
      */
     private void Commit() {
-
+        string jsonTemplates = JsonSerializer.Serialize(
+            _templates.Values.ToList(),
+            new JsonSerializerOptions {
+                PropertyNamingPolicy=JsonNamingPolicy.CamelCase,
+                WriteIndented=true
+        });
+        File.WriteAllText(TemplatesPath, jsonTemplates);
     }
 
     private void LoadTemplates() {
         using FileStream fs = File.OpenRead(TemplatesPath);
-        SetTemplate[]? templates = JsonSerializer.Deserialize<SetTemplate[]>(fs);
+        SetTemplate[]? templates = JsonSerializer.Deserialize<SetTemplate[]>(
+            fs,
+            new JsonSerializerOptions {
+                PropertyNamingPolicy=JsonNamingPolicy.CamelCase
+            }
+        );
         if (templates == null) {
             throw new Exception("Unable to load templates data");
         }
