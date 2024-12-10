@@ -7,7 +7,7 @@ static class Program {
     static void Main(string[] args) {
         SongManager songManager = new SongManager();
         TemplateManager templateManager = new TemplateManager();
-        SetBuilder setBuilder = new SetBuilder(); 
+        SetBuilder setBuilder = new SetBuilder(songManager);
         ArgParser parser = new ArgParser(args);
         parser.Parse();
         App app = new App(songManager, templateManager, setBuilder);

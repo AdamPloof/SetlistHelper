@@ -64,7 +64,7 @@ public class TemplateManager {
     }
 
     /**
-     * Commit the current template list to CSV
+     * Commit the current template list to JSON
      */
     private void Commit() {
         string jsonTemplates = JsonSerializer.Serialize(
