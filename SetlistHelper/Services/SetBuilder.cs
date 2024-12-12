@@ -1,4 +1,5 @@
 using SetlistHelper.Models;
+using SetlistHelper.Extensions;
 
 namespace SetlistHelper.Services;
 
@@ -17,20 +18,19 @@ public class SetBuilder {
 
     /// <value>Property <c>_notPlayed</c> The songs in the repertoire not used in the set yet</value>
     /// keys in the dict are the dynamic levels of the song
-    private Dictionary<int, List<Song>> _notPlayed;
+    private Dictionary<int, Stack<Song>> _notPlayed;
 
     /// <value>Property <c>_played</c> The songs in the repertoire that have been used</value>
     /// keys in the dict are the dynamic levels of the song
-    private Dictionary<int, List<Song>> _played;
+    private List<Song> _played;
     
     public SetBuilder(SongManager songManager) {
         _songManager = songManager;
-        _notPlayed = new Dictionary<int, List<Song>>();
-        _played = new Dictionary<int, List<Song>>();
+        _notPlayed = new Dictionary<int, Stack<Song>>();
+        _played = new List<Song>();
 
         for (int i = 1; i <= 10; i++) {
-            _notPlayed[i] = new List<Song>();
-            _played[i] = new List<Song>();
+            _notPlayed[i] = new Stack<Song>();
         }
     }
 
@@ -42,7 +42,10 @@ public class SetBuilder {
     /// <param name="name">The name for the set</param>
     /// <returns>the Setlist</returns>
     public Setlist Build(SetTemplate template, string name) {
-        LoadSongs();
+        if (LoadSongs() == 0) {
+            throw new Exception("Could not build setlist. There are no songs in the repertoire.");
+        }
+
         Setlist setlist = new Setlist(name == "" ? GetDefaultSetName() : name);
         foreach (int lvl in template.DynamicPlot) {
             AddSongToSet(lvl, ref setlist);
@@ -51,11 +54,19 @@ public class SetBuilder {
         return setlist;
     }
 
-    private void LoadSongs() {
+    /// <summary>
+    /// Load songs from data source. Shuffle list of songs to ensure there's
+    /// some randomness to the setlists.
+    /// </summary>
+    /// <returns>the number of songs loaded</returns>
+    private int LoadSongs() {
         List<Song> songs = _songManager.GetSongs().Values.ToList();
+        songs.Shuffle();
         foreach (Song song in songs) {
-            _notPlayed[song.DynamicLevel].Add(song);
+            _notPlayed[song.DynamicLevel].Push(song);
         }
+
+        return songs.Count;
     }
 
     /// <summary>
@@ -67,7 +78,42 @@ public class SetBuilder {
     /// <param name="dynamicLvl"></param>
     /// <param name="setlist"></param>
     private void AddSongToSet(int dynamicLvl, ref Setlist setlist) {
-        
+        if (_notPlayed[dynamicLvl].Count > 0) {
+            Song song = _notPlayed[dynamicLvl].Pop();
+            setlist.AddSong(song);
+            _played.Add(song);
+
+            return;
+        }
+
+        int high = dynamicLvl < 10 ? dynamicLvl + 1 : 10;
+        int low = dynamicLvl > 1 ? dynamicLvl - 1 : 1;
+        int closest = -1;
+        while (high <= 10 && low > 0 && closest == -1) {
+            // TODO: randomly set closest to high or low if both are valid
+            if (high <= 10 && _notPlayed[high].Count > 0) {
+                closest = high;
+            } else if (low > 0 && _notPlayed[low].Count > 0) {
+                closest = low;
+            } else {
+                high++;
+                low--;
+            }
+        }
+
+        if (closest > 0) {
+            Song song = _notPlayed[closest].Pop();
+            setlist.AddSong(song);
+            _played.Add(song);
+        } else {
+            // There were no songs left in the _notPlayed list, time to reshuffle the deck
+            _played.Shuffle();
+            foreach (Song playedSong in _played) {
+                _notPlayed[playedSong.DynamicLevel].Push(playedSong);
+            }
+
+            _played = new List<Song>();
+        }
     }
 
     private string GetDefaultSetName() {
