@@ -1,3 +1,5 @@
+using System;
+
 using SetlistHelper.Models;
 using SetlistHelper.Extensions;
 
@@ -14,7 +16,9 @@ public class SetBuilder {
     /// </summary>
     public static int MaxDynamicLevel = 10;
 
-    private SongManager _songManager;
+    private static readonly Random _random = new Random();
+
+    private ISongStorage _songManager;
 
     /// <value>Property <c>_notPlayed</c> The songs in the repertoire not used in the set yet</value>
     /// keys in the dict are the dynamic levels of the song
@@ -24,7 +28,7 @@ public class SetBuilder {
     /// keys in the dict are the dynamic levels of the song
     private List<Song> _played;
     
-    public SetBuilder(SongManager songManager) {
+    public SetBuilder(ISongStorage songManager) {
         _songManager = songManager;
         _notPlayed = new Dictionary<int, Stack<Song>>();
         _played = new List<Song>();
@@ -79,6 +83,7 @@ public class SetBuilder {
     /// <param name="setlist"></param>
     private void AddSongToSet(int dynamicLvl, ref Setlist setlist) {
         if (_notPlayed[dynamicLvl].Count > 0) {
+            // Song available with matching dynamic level
             Song song = _notPlayed[dynamicLvl].Pop();
             setlist.AddSong(song);
             _played.Add(song);
@@ -88,17 +93,23 @@ public class SetBuilder {
 
         int high = dynamicLvl < 10 ? dynamicLvl + 1 : 10;
         int low = dynamicLvl > 1 ? dynamicLvl - 1 : 1;
+        bool highMatch;
+        bool lowMatch;
         int closest = -1;
-        while (high <= 10 && low > 0 && closest == -1) {
-            // TODO: randomly set closest to high or low if both are valid
-            if (high <= 10 && _notPlayed[high].Count > 0) {
-                closest = high;
-            } else if (low > 0 && _notPlayed[low].Count > 0) {
-                closest = low;
+        while ((high <= 10 || low > 0) && closest == -1) {
+            // No song available with matching dynamic level, get next closest
+            highMatch = high <= 10 && _notPlayed[high].Count > 0;
+            lowMatch = low > 0 && _notPlayed[low].Count > 0;
+            if (highMatch && lowMatch) {
+                // Choose randomly betwen high or low if both available
+                int coinToss = _random.Next(0, 2);
+                closest = coinToss == 0 ? high : low;
             } else {
-                high++;
-                low--;
+                closest = highMatch ? high : lowMatch ? low : -1;
             }
+
+            high++;
+            low--;
         }
 
         if (closest > 0) {
@@ -113,6 +124,7 @@ public class SetBuilder {
             }
 
             _played = new List<Song>();
+            AddSongToSet(dynamicLvl, ref setlist);
         }
     }
 

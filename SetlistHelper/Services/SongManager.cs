@@ -10,7 +10,7 @@ using SetlistHelper.Models;
 
 // Uses CsvHelper
 // https://joshclose.github.io/CsvHelper/getting-started/
-public class SongManager {
+public class SongManager : ISongStorage {
     static readonly string SongsPath = Path.Combine(AppContext.BaseDirectory, "./data/songs.csv");
 
     private readonly Dictionary<string, Song> _songs;
