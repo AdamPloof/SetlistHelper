@@ -48,6 +48,7 @@ internal class App {
         // Note: order of options is important -- earlier options take precedence
         _optionActions = new List<EditAction> {
             {new EditAction() {Option="--help",   ShouldContinue=false, Editor=Help}},
+            {new EditAction() {Option="--build",  ShouldContinue=false, Editor=Build}},
             {new EditAction() {Option="--mode",   ShouldContinue=true,  Editor=SetEditMode}},
             {new EditAction() {Option="--add",    ShouldContinue=false, Editor=Add}},
             {new EditAction() {Option="--remove", ShouldContinue=false, Editor=Remove}},
@@ -77,7 +78,15 @@ internal class App {
     }
 
     public void Build(string templateName) {
-        Console.WriteLine($"Building template: {templateName}");
+        SetTemplate? template = _templateManager.GetTemplate(templateName);
+        if (template == null) {
+            Console.WriteLine($"Could not build setlist. No template found for {templateName}");
+            return;
+        }
+
+        // TODO: take in a setlist name from user input
+        Setlist setlist = _setBuilder.Build(template, "Setlist");
+        setlist.Print();
     }
 
     public void SetEditMode(string mode) {

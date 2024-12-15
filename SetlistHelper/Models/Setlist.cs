@@ -25,7 +25,7 @@ public class Setlist {
     }
 
     public void Print() {
-        Console.WriteLine($"Set: ${Name}");
+        Console.WriteLine($"Set: {Name}");
         foreach (Song song in _songs) {
             Console.WriteLine(song.Title);
         }
