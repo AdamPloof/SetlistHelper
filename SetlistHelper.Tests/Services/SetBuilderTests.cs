@@ -9,10 +9,10 @@ namespace SetlistHelper.Tests.Services;
 public class SetBuilderTests {
     [Fact]
     public void SetWithSingleSongIsBuilt() {
-        Dictionary<string, Song> songs = makeSongs(1);
+        Dictionary<string, Song> songs = MakeSongs(1);
         MockSongManager songManager = new MockSongManager(songs);
         SetBuilder builder = new SetBuilder(songManager);
-        SetTemplate template = makeTemplate();
+        SetTemplate template = MakeTemplate();
         Setlist setList = builder.Build(template, "Test");
 
         int expectedSetLength = template.DynamicPlot.Count;
@@ -29,17 +29,17 @@ public class SetBuilderTests {
         Dictionary<string, Song> songs = new Dictionary<string, Song>();
         MockSongManager songManager = new MockSongManager(songs);
         SetBuilder builder = new SetBuilder(songManager);
-        SetTemplate template = makeTemplate();
+        SetTemplate template = MakeTemplate();
         Exception e = Assert.Throws<Exception>(() => builder.Build(template, "Test"));
         Assert.Equal("Could not build setlist. There are no songs in the repertoire.", e.Message);
     }
 
     [Fact]
     public void SetWithNotEnoughSongsAreReused() {
-        Dictionary<string, Song> songs = makeSongs(6);
+        Dictionary<string, Song> songs = MakeSongs(6);
         MockSongManager songManager = new MockSongManager(songs);
         SetBuilder builder = new SetBuilder(songManager);
-        SetTemplate template = makeTemplate();
+        SetTemplate template = MakeTemplate();
         Setlist setList = builder.Build(template, "Test");
 
         int expectedSetLength = template.DynamicPlot.Count;
@@ -65,10 +65,10 @@ public class SetBuilderTests {
 
     [Fact]
     public void SetWithEnoughSongsAreNotReused() {
-        Dictionary<string, Song> songs = makeSongs(10);
+        Dictionary<string, Song> songs = MakeSongs(10);
         MockSongManager songManager = new MockSongManager(songs);
         SetBuilder builder = new SetBuilder(songManager);
-        SetTemplate template = makeTemplate();
+        SetTemplate template = MakeTemplate();
         Setlist setList = builder.Build(template, "Test");
 
         int expectedSetLength = template.DynamicPlot.Count;
@@ -92,7 +92,36 @@ public class SetBuilderTests {
         Assert.Empty(songsUsedMoreThanOnce);
     }
 
-    private SetTemplate makeTemplate() {
+    [Fact]
+    public void SetWithAllDynamicStepsIsComplete() {
+        Dictionary<string, Song> songs = MakeSongs(10);
+        MockSongManager songManager = new MockSongManager(songs);
+        SetBuilder builder = new SetBuilder(songManager);
+        SetTemplate template = MakeTemplateAllSteps();
+        Setlist setList = builder.Build(template, "Test");
+
+        int expectedSetLength = template.DynamicPlot.Count;
+        Assert.Equal(expectedSetLength, setList.Songs.Count);
+        Dictionary<string, int> songReusedCount = [];
+        foreach (Song song in setList.Songs) {
+            if (songReusedCount.TryGetValue(song.Title, out int _)) {
+                songReusedCount[song.Title]++;
+            } else {
+                songReusedCount[song.Title] = 1;
+            }
+        }
+
+        List<Song> songsUsedMoreThanOnce = [];
+        foreach (KeyValuePair<string, int> songCount in songReusedCount) {
+            if (songCount.Value > 1) {
+                songsUsedMoreThanOnce.Add(songs[songCount.Key]);
+            }
+        }
+
+        Assert.Empty(songsUsedMoreThanOnce);
+    }
+
+    private SetTemplate MakeTemplate() {
         SetTemplate template = new SetTemplate("test");
         template.AddStep(2);
         template.AddStep(2);
@@ -105,7 +134,23 @@ public class SetBuilderTests {
         return template;
     }
 
-    private Dictionary<string, Song> makeSongs(int count) {
+    private SetTemplate MakeTemplateAllSteps() {
+        SetTemplate template = new SetTemplate("test");
+        template.AddStep(1);
+        template.AddStep(2);
+        template.AddStep(3);
+        template.AddStep(4);
+        template.AddStep(5);
+        template.AddStep(6);
+        template.AddStep(7);
+        template.AddStep(8);
+        template.AddStep(9);
+        template.AddStep(10);
+
+        return template;
+    }
+
+    private Dictionary<string, Song> MakeSongs(int count) {
         List<Song> songs = [];
         songs.Add(new Song() {Title="One", DynamicLevel=1, Length=1});
         songs.Add(new Song() {Title="Two", DynamicLevel=2, Length=2});
