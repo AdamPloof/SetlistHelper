@@ -59,9 +59,8 @@ internal class App {
     }
 
     public void Run(Dictionary<string, string?> options) {
-        // TODO: validation options
         if (options.Count == 0) {
-            // TODO: exit with error, no options provided
+            Console.Write("No options provided. Exiting.");
             return;
         }
 
@@ -84,8 +83,7 @@ internal class App {
             return;
         }
 
-        // TODO: take in a setlist name from user input
-        Setlist setlist = _setBuilder.Build(template, "Setlist");
+        Setlist setlist = _setBuilder.Build(template, GetSetName());
         setlist.Print();
     }
 
@@ -126,11 +124,11 @@ internal class App {
         }
     }
 
-    public void List(string _ = "") {
-        if (_editMode == EditModes.Song) {
-            ListSongs();
-        } else {
+    public void List(string type = "") {
+        if (type == "template") {
             ListTemplates();
+        } else {
+            ListSongs();
         }
     }
 
@@ -295,5 +293,16 @@ internal class App {
         }
 
         template.Print();
+    }
+
+    private string GetSetName() {
+        Console.WriteLine("Enter set name:");
+        string? name = Console.ReadLine();
+        if (name == null) {
+            Console.WriteLine("Set name cannot be empty");
+            name = GetSetName();
+        }
+
+        return name;
     }
 }

@@ -2,6 +2,7 @@ namespace SetlistHelper.Services;
 
 using System;
 using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using System.Globalization;
 using CsvHelper;
@@ -57,10 +58,18 @@ public class SongManager : ISongStorage {
     }
 
     public void List() {
-        Console.WriteLine("Songs\n-------");
+        StringBuilder songTable = new StringBuilder("| Title");
+        songTable.Append(new string(' ', 34));
+        songTable.Append("| Length | Dynamic Level |\n");
+        songTable.Append("| ");
+        songTable.Append(new string('-', 38));
+        songTable.Append(" | ------ | ------------- |\n");
+
         foreach (Song song in _songs.Values.ToList()) {
-            Console.WriteLine(song.Title);
+            songTable.Append(SongRow(song));
         }
+
+        Console.WriteLine(songTable);
     }
 
     /**
@@ -83,5 +92,11 @@ public class SongManager : ISongStorage {
                 _songs.Add(s.Title, s);
             }
         }
+    }
+
+    private string SongRow(Song song) {
+        string row = "| {0, -38} | {1, 6} | {2, 13} |\n";
+
+        return string.Format(row, song.Title, song.Length, song.DynamicLevel);
     }
 }

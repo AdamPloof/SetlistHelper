@@ -50,7 +50,7 @@ public class SetBuilder {
             throw new Exception("Could not build setlist. There are no songs in the repertoire.");
         }
 
-        Setlist setlist = new Setlist(name == "" ? GetDefaultSetName() : name);
+        Setlist setlist = new Setlist(name);
         foreach (int lvl in template.DynamicPlot) {
             AddSongToSet(lvl, ref setlist);
         }
@@ -126,10 +126,5 @@ public class SetBuilder {
             _played = new List<Song>();
             AddSongToSet(dynamicLvl, ref setlist);
         }
-    }
-
-    private string GetDefaultSetName() {
-        // TODO: make default name based on date
-        return "Default set";
     }
 }
