@@ -9,8 +9,12 @@ using CsvHelper;
 
 using SetlistHelper.Models;
 
-// Uses CsvHelper
-// https://joshclose.github.io/CsvHelper/getting-started/
+/// <summary>
+/// SongManager is responsible for reading and writing songs from/to a file
+/// </summary>
+/// <remarks>
+/// Makes use of the CsvHelper package: https://joshclose.github.io/CsvHelper/getting-started/
+/// </remarks>
 public class SongManager : ISongStorage {
     static readonly string SongsPath = Path.Combine(AppContext.BaseDirectory, "./data/songs.csv");
 
@@ -37,8 +41,7 @@ public class SongManager : ISongStorage {
             Commit();
             Console.WriteLine($"{song.Title} added.");
         } catch (ArgumentException) {
-            // TODO: let the user a song with this title is already in the setlist
-            // TODO: check for this explicitly rather than catching as an exception
+            Console.WriteLine($"Can't add song. {song.Title} already exists in the repetoire.");
         }
     }
 
@@ -72,9 +75,9 @@ public class SongManager : ISongStorage {
         Console.WriteLine(songTable);
     }
 
-    /**
-     * Commit the current song list to CSV
-     */
+    /// <summary>
+    /// Commit the current song list to CSV 
+    /// </summary>
     private void Commit() {
         using (StreamWriter writer = new StreamWriter(SongsPath))
         using (CsvWriter csv = new CsvWriter(writer, CultureInfo.InvariantCulture))

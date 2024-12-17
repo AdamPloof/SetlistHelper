@@ -1,5 +1,6 @@
 ﻿using SetlistHelper.Services;
 using SetlistHelper.Models;
+using SetlistHelper.Exceptions;
 
 namespace SetlistHelper;
 
@@ -21,16 +22,24 @@ internal class App {
         Template
     }
 
-    /**
-     * Stores the Action to call for each option
-     *
-     * Option: the name of option (e.g. --help, --add, etc.)
-     * ShouldContinue: Should the application continue after executing the action
-     * Action: the method to call for this option 
-     */ 
+    /// <summary>
+    /// Stores the Action to call for each option
+    /// </summary>
+    ///
     private struct EditAction {
+        /// <summary>
+        /// the name of option (e.g. --help, --add, etc.)
+        /// </summary>
         public string Option;
+
+        /// <summary>
+        /// Should the application continue after executing the action
+        /// </summary>
         public bool ShouldContinue;
+
+        /// <summary>
+        /// the method to call for this option 
+        /// </summary>
         public Action<string> Editor;
     }
 
@@ -69,7 +78,13 @@ internal class App {
                 continue;
             }
 
-            e.Editor.Invoke(val ?? "");
+            try {
+                e.Editor.Invoke(val ?? "");
+            } catch (InvalidOptionException err) {
+                Console.WriteLine(err.Message);
+                return;
+            }
+
             if (!e.ShouldContinue) {
                 break;
             }
@@ -93,8 +108,7 @@ internal class App {
         } else if (mode == "template") {
             _editMode = EditModes.Template;
         } else {
-            // TODO: exit with error message instead of exception
-            throw new ArgumentException($"Edit mode must be either \"song\" or \"template\". {mode} provided");
+            throw new InvalidOptionException($"Edit mode must be either \"song\" or \"template\". {mode} provided");
         }
 
         Console.WriteLine($"Mode: {mode}");

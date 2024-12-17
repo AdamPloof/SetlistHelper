@@ -3,6 +3,10 @@ namespace SetlistHelper.Services;
 using System.Collections.Generic;
 using SetlistHelper.Models;
 
+/// <summary>
+/// Types that implement ISongStorage provide a means a retrieving, writing, and updating
+/// songs from a storage medium such as a file or database.
+/// </summary>
 public interface ISongStorage {
     /// <summary>
     /// Retrieve a Song by title

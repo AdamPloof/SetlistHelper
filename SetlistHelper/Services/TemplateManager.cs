@@ -7,10 +7,9 @@ using System.Text.Json;
 
 using SetlistHelper.Models;
 
-/*
- * TemplateManager is responsible for reading/writing Template data
- * from storage.
- */
+/// <summary>
+/// TemplateManager is responsible for reading/writing Template data from storage.
+/// </summary>
 public class TemplateManager {
     static readonly string TemplatesPath = Path.Combine(AppContext.BaseDirectory, "./data/templates.json");
 
@@ -63,9 +62,9 @@ public class TemplateManager {
         }
     }
 
-    /**
-     * Commit the current template list to JSON
-     */
+    /// <summary
+    /// Commit the current template list to JSON
+    /// </summary>
     private void Commit() {
         string jsonTemplates = JsonSerializer.Serialize(
             _templates.Values.ToList(),

@@ -5,14 +5,17 @@ using System.Collections.Generic;
 
 using SetlistHelper.Services;
 
-/**
- * SetTemplate stores the dynamic steps of a set. For instance, a set
- * that should start mellow, gradually rise, slightly dip around 3/4 of the
- * way through the set and crescendo to the finish could be represented by
- * the dynamic plot:
- *
- *  [2, 3, 4, 4, 5, 7, 3, 8, 10]
- */
+/// <summary>
+/// SetTemplate stores the name and dynamic steps of a set.
+/// </summary
+/// 
+/// <example>
+/// Here's the plot for a set that should start mellow, gradually rise,
+/// slightly dip around 3/4 of the way through the set and crescendos
+/// to the finish:
+/// 
+/// <c>[2, 3, 4, 4, 5, 7, 3, 8, 10]</c>
+/// </example>
 public class SetTemplate {
     public required string Name { get; set; }
     public List<int> DynamicPlot {
